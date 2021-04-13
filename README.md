@@ -18,7 +18,7 @@ como identificadores e uma coluna IdCronograma adiciona afim de evitar duplicida
 --------------
 
 3- Tentei criar uma SP para o insert dos dados do terceiro arquivo, porém não ainda não consegui 
-uma forma de criar uma variável declaravel na Procedure para o caminho do arquivo dentro de um Bulk Insert.
+uma forma da SP aceitar uma variável declaravel para o caminho do arquivo dentro de um Bulk Insert.
 
 --------------
 

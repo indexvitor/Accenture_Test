@@ -4,10 +4,10 @@ GO
 USE TESTE_ACCENTURE
 GO
 
-/* CRIA��O DAS TABELAS */
+/* CRIAÇÃO DAS TABELAS */
 CREATE TABLE tbContrato(
 	IDContrato INT NOT NULL IDENTITY,
-	CodContrato VARCHAR(30) NOT NULL,
+	CodContrato INT NOT NULL, -- Foi mantida apenas a numeração do código do contrato.
 	NomeContrato VARCHAR(20) NOT NULL,
 	TipoInstrumento VARCHAR(10) NOT NULL,
 	Vencimento DATE NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE tbCronograma(
 	DataFoto DATE NOT NULL,
 	IDTranche TINYINT NOT NULL,
 	Tipo INT NOT NULL,
-	DatBase DATE NOT NULL,
+	DatBase DATE NOT NULL, --Coluna nomeada como DATbase por boa prática.
 	DataBaixa DATE NOT NULL,
 	DataEvento DATE NOT NULL,
 	Projetado DECIMAL (38,2) NOT NULL,

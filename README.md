@@ -22,4 +22,14 @@ uma forma de criar uma variável declaravel na Procedure para o caminho do arqui
 
 --------------
 
+4- Os valores foram alterados para número e as virgulas substituídas por ponto '.', afim de o SQL reconhecesse os centavos e não os adicionasse por 00 no fim desses valores.
+
+--------------
+
+
+--------------
+
+
+--------------
+
 

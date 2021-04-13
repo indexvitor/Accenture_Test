@@ -5,6 +5,7 @@
 	GO
 
 /* ADICIONANDO COLUNA IDCRONOGRAMA */
+-- Coluna adicionada a fim de evitar duplicidade no conjunto de colunas definido como indentificadoras de fluxo.
 ALTER TABLE tbCronograma
 	add IDCronograma INT IDENTITY(1,1) NOT NULL
 GO
@@ -14,7 +15,7 @@ ALTER TABLE tbCronograma
 	ADD IDFluxo AS CONCAT(IDContrato,IDTranche,Tipo,convert(varchar, "DatBase", 112),IdCronograma)
 GO
 
--- DEFINI«√O DO CAMPO COMO PK
+-- DEFINI√á√ÉO DO CAMPO COMO PK
 ALTER TABLE tbCronograma
 	ADD CONSTRAINT PK_IDFluxo PRIMARY KEY (IDFluxo)
 GO

@@ -17,12 +17,13 @@ como identificadores e uma coluna IdCronograma adiciona afim de evitar duplicida
 
 --------------
 
-3- Tentei criar uma SP para o insert dos arquivos do terceiro arquivo, porém não ainda não consegui 
+3- Tentei criar uma SP para o insert dos dados do terceiro arquivo, porém não ainda não consegui 
 uma forma de criar uma variável declaravel na Procedure para o caminho do arquivo dentro de um Bulk Insert.
 
 --------------
 
-4- Os valores foram alterados para número e as virgulas substituídas por ponto '.', afim de o SQL reconhecesse os centavos e não os adicionasse por 00 no fim desses valores.
+4- Os valores foram alterados para número e as virgulas substituídas por ponto '.', afim de o 
+SQL reconhecesse os centavos e não os adicionasse por 00 no fim desses valores.
 
 --------------
 

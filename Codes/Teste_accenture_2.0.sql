@@ -120,6 +120,7 @@ GO
 e deve retornar o cronograma do contrato na data foto. Formato de saída abaixo: */
 
 -- RETORNAR O MAIS RECENTE ATÉ A DATA FOTO.
+-- OU ADICIONAR UM "TOP (1)" CASO SEJÁ REQUERIDO APENAS O PRIMEIRO RESULTADO
 
 CREATE OR ALTER PROCEDURE SP_CONTRATO_DATAFOTO
 	@IDContrato INT, @DataFoto DATE
@@ -194,17 +195,13 @@ GO
 --<series @priceseries>
 --</[tipoinstrumento]>
 --</contract>
-CREATE TABLE XML_DATA(
-	IDContrato INT UNIQUE,
-	XMLGERADO NVARCHAR(MAX)
-)
-GO
 
-CREATE PROCEDURE SP_MANIPULA_XML 
-	@IDCONTRATO INT 
-AS 
-DECLARE @xmlgerado xml
-SET @xmlgerado = ( SELECT
+/* CRIAÇÃO DOS XMLs */
+SELECT * FROM tbContrato
+
+DECLARE @IDCONTRATO INT
+SET @IDCONTRATO = 372586
+SELECT 
         IDContrato AS '@Contrato',
        (
             SELECT
@@ -232,18 +229,59 @@ SET @xmlgerado = ( SELECT
 		)
 FROM tbContrato
 WHERE IDContrato = @IDCONTRATO
-FOR XML PATH ('Contrato'), ROOT ('ACCENTURE'))
-
-SELECT @Xmlgerado
-
-INSERT INTO XML_DATA (IDContrato, XMLGERADO) VALUES (@IDCONTRATO, @xmlgerado)
+FOR XML PATH ('Contrato'), ROOT ('ACCENTURE')
 GO
 
-INSERT INTO XML_DATA VALUES (170374, '<ACCENTURE><Contrato Contrato="170374"><Date issuedate="2000-08-17" 
-calendar="CALUSAOTC" basis="American30_360"/><Currency index="FixedRate" currency="USD"/><PriceSeries/></Contrato></ACCENTURE>')
+CREATE TABLE XML_DATA(
+	IDContrato INT UNIQUE,
+	XMLGERADO NVARCHAR(MAX)
+)
 GO
 
-EXEC SP_MANIPULA_XML 278266
+--CRIAÇÃO DA PROC QUE ADICIONA OS XMLS A TABELA XML_DATA
+CREATE PROCEDURE SP_MANIPULA_XML 
+	@IDCONTRATO INT 
+AS 
+DECLARE @xmlgerado xml
+SET @xmlgerado = ( SELECT -- Definição da variável como o resultado da criação do XML.
+        IDContrato AS '@Contrato',
+       (
+            SELECT
+					Emissao AS '@issuedate',
+					Calendario AS'@calendar',
+					Basis AS '@basis'
+			FROM tbContrato
+			WHERE IDContrato = @IDCONTRATO
+			FOR XML PATH ('Date'), TYPE
+		),
+		(
+			SELECT
+					Indexador AS '@index',
+					Moeda AS '@currency'
+			FROM tbContrato
+			WHERE IDContrato = @IDCONTRATO
+			FOR XML PATH ('Currency'), TYPE
+		),
+		(
+			SELECT
+					SeriePreco AS '@priceseries'
+			FROM tbContrato
+			WHERE IDContrato = @IDCONTRATO
+			FOR XML PATH ('PriceSeries'), TYPE
+		)
+FROM tbContrato
+WHERE IDContrato = @IDCONTRATO -- Recebe a variável da Proccedure
+FOR XML PATH ('Contrato'), ROOT ('ACCENTURE')) -- tranforma o xml e o ")" fecha o resultado da definição da variável @xmlgerado
+
+SELECT @Xmlgerado -- adiciona o resultado da váriavel a tabela XML_DATA recebendo as duas variáveis.
+INSERT INTO XML_DATA (IDContrato, XMLGERADO) 
+VALUES (@IDCONTRATO, @xmlgerado)
+GO
+
+SELECT IDCONTRATO FROM tbContrato
+GO
+
+EXEC SP_MANIPULA_XML 441000 
 GO
 
 SELECT * FROM XML_DATA

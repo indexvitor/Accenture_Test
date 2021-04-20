@@ -1,7 +1,10 @@
 # Accenture_Test
 Teste da Accenture
 
-** ***UPDATE 19/04:
+*UPDATE 20/04*:
+- Criado um script que adiciona a tag 'calendarname' com o dado sem o prefixo "CAL".
+
+*UPDATE 19/04*:
 - Foi alterado o DataType do Identificador de Fluxo para INT utilizando CHECKSUM.
 - Foram adicionadas colunas no campo INCLUDE do Índices Non-clustered.
 - Alteração da primeira SP para que retorne o valor até a Data Foto.

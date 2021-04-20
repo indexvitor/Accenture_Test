@@ -294,42 +294,97 @@ GO
 --https://docs.microsoft.com/pt-br/sql/relational-databases/xml/examples-using-path-mode?view=sql-server-ver15
 --https://stackoverflow.com/questions/48338477/insert-into-select-in-sql-server
 
---Crie um script que insere um novo atributos chamado “calendarname” 
---nos xmls dessa nova tabela. O Atributo deve ser o valor da tag @calender sem o prefixo ‘CAL’
-UPDATE XML_DATA
-SET xmlgerado.modify('insert atribute calendar {sql:variable("@calendarname")}'
-						+(SELECT SUBSTRING( c.Calendario, 4, 6) AS CALENDARNAME
+
+
+/********************************************************************************************************/
+/***************--Crie um script que insere um novo atributos chamado “calendarname” ********************/
+/****---nos xmls dessa nova tabela. O Atributo deve ser o valor da tag @calender sem o prefixo ‘CAL’ ****/
+/********************************************************************************************************/
+
+
+/*********************************/
+/************ QUERY **************/
+/*********************************/
+DECLARE @CALENDARNAME NVARCHAR (200), -- receberá o novo nome do contrato na substring 
+		@IDCONTRATO INT, -- Recebe Id do contrato
+		@x XML, -- recebe a estrutura da coluna xml.
+		@tag varchar(100) = 'calendarname' -- nova tag
+
+SET @IDCONTRATO = 170374
+
+SET @CALENDARNAME = (SELECT SUBSTRING( c.Calendario, 4, 6) AS CALENDARNAME
 						FROM XML_DATA AS X
 						INNER JOIN tbContrato AS C
 							ON X.IDContrato = C.IDContrato
-						WHERE x.IDContrato = 170374)+
-					 'into (/ACCENTURE/Contrato)[1]')
-WHERE IDContrato = 170374
+						WHERE x.IDContrato = @IDCONTRATO 
+					)
 
-SELECT * FROM XML_DATA
-
-----------------------------
-
-DECLARE @x XML
-SELECT @x = (
+SET @x = (
 			SELECT XMLGERADO
 			FROM XML_DATA
-			WHERE IDContrato = 170374
-			)
-SET @x.modify('
-    insert element calendardate {'+(SELECT SUBSTRING( c.Calendario, 4, 6) AS CALENDARNAME
-						FROM XML_DATA AS X
-						INNER JOIN tbContrato AS C
-							ON X.IDContrato = C.IDContrato
-						WHERE x.IDContrato = 170374)+'}
-    as first
-    into (calendardate)[1]
-    ')
-SELECT @x
+			WHERE IDContrato = @IDCONTRATO
+		 )
+
+DECLARE @new_element XML='<' + @tag +'>' +  @CALENDARNAME + '</' +  @tag + '>';
+
+SET @x.modify('insert sql:variable("@new_element") as first into (/Contrato)[1]');
+SELECT @x;
+
+UPDATE XML_DATA
+SET XMLGERADO = @X
+WHERE IDContrato = @IDCONTRATO
+GO
+
+
+select xmlgerado from XML_DATA
 go
 
 
+/*********************************/
+/********STORED PROCEDURE*********/
+/*********************************/
+
+CREATE PROCEDURE SP_ALTERA_CALENDAR
+	@IDCONTRATO INT
+AS
+DECLARE @CALENDARNAME NVARCHAR (200), -- receberá o novo nome do contrato na substring 
+		--@IDCONTRATO INT, -- Recebe Id do contrato
+		@x XML, -- recebe a estrutura da coluna xml.
+		@tag varchar(100) = 'calendarname' -- nova tag
+
+SET @CALENDARNAME = (SELECT SUBSTRING( c.Calendario, 4, 6) AS CALENDARNAME
+						FROM XML_DATA AS X
+						INNER JOIN tbContrato AS C
+							ON X.IDContrato = C.IDContrato
+						WHERE x.IDContrato = @IDCONTRATO 
+					)
+
+SET @x = (
+			SELECT XMLGERADO
+			FROM XML_DATA
+			WHERE IDContrato = @IDCONTRATO
+		 )
+
+DECLARE @new_element XML='<' + @tag +'>' +  @CALENDARNAME + '</' +  @tag + '>';
+
+SET @x.modify('insert sql:variable("@new_element") as first into (/ACCENTURE/Contrato)[1]');
+SELECT @x;
+
+UPDATE XML_DATA
+SET XMLGERADO = @X
+WHERE IDContrato = @IDCONTRATO
+GO
+-------------------
+select IDContrato,xmlgerado from XML_DATA
+go
+
+EXEC SP_ALTERA_CALENDAR 441000
+GO
+
+
+/********************************************************************************************************/
+
 --Crie um script que remova dos xmls a nova tag criada.
 UPDATE XML_DATA
-SET xmlgerado.modify('delete (/ACCENTURE/Contrato/Currency)')
-WHERE IDContrato = 170374
+SET xmlgerado.modify('delete (/ACCENTURE/Contrato/calendarname)')
+WHERE IDContrato = 175702

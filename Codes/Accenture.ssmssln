@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# SQL Server Management Studio Solution File, Format Version 18.00
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Accenture", "Accenture.ssmssqlproj", "{A2D31769-D2E8-4666-A7F5-EB8FADD9A35F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Default|Default = Default|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2D31769-D2E8-4666-A7F5-EB8FADD9A35F}.Default|Default.ActiveCfg = Default
+		{2AE00827-D810-4140-AD69-AF3FCAB42D32}.Default|Default.ActiveCfg = Default
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9507C9B8-0AE8-498E-8E0B-D6EF4E434A79}
+	EndGlobalSection
+EndGlobal
